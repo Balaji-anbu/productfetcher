@@ -602,46 +602,46 @@ app.get('/health', (req, res) => {
   // This is simpler if you want to keep everything in one connection
   // but with a different connection string
   
-//   // Server startup with product database connection
-//   const startServer = async () => {
-//     try {
-//       // Connect to main database
-//       await mongoose.connect(process.env.MONGO_URI);
-//       console.log("✅ Main MongoDB Connected");
+  // Server startup with product database connection
+  const startServer = async () => {
+    try {
+      // Connect to main database
+      await mongoose.connect(process.env.MONGO_URI);
+      console.log("✅ Main MongoDB Connected");
       
-//       // Connect to product database or use the same connection
-//       // This function is defined above
-//       await connectProductDB();
+      // Connect to product database or use the same connection
+      // This function is defined above
+      await connectProductDB();
       
-//       // Start server
-//       app.listen(port, () => {
-//         console.log(`🚀 Server running on port ${port}`);
-//       });
-//     } catch (err) {
-//       console.error("MongoDB Connection Failed:", err);
-//       process.exit(1);
-//     }
-//   };
+      // Start server
+      app.listen(port, () => {
+        console.log(`🚀 Server running on port ${port}`);
+      });
+    } catch (err) {
+      console.error("MongoDB Connection Failed:", err);
+      process.exit(1);
+    }
+  };
   
-//   startServer();
+  startServer();
   
   
-// // Global Error Handler
-// app.use((err, req, res, next) => {
-//     console.error(err.stack);
-//     res.status(500).json({ 
-//       success: false, 
-//       message: 'Something went wrong!' 
-//     });
-//   });
+// Global Error Handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Something went wrong!' 
+    });
+  });
   
-//   // Handle 404 routes
-//   app.use((req, res) => {
-//     res.status(404).json({ 
-//       success: false, 
-//       message: 'Route not found' 
-//     });
-//   });
+  // Handle 404 routes
+  app.use((req, res) => {
+    res.status(404).json({ 
+      success: false, 
+      message: 'Route not found' 
+    });
+  });
   
 //   // Start server
   app.listen(port, () => {
