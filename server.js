@@ -61,9 +61,6 @@ const productSchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    subcategory: {
-      type: String
-    },
     images: [String],
     mainImage: {
       type: String,
@@ -78,28 +75,8 @@ const productSchema = new mongoose.Schema({
       default: 0,
       min: 0
     },
-    ratings: {
-      average: {
-        type: Number,
-        default: 0,
-        min: 0,
-        max: 5
-      },
-      count: {
-        type: Number,
-        default: 0
-      }
-    },
-    features: [String],
-    specifications: [{
-      name: String,
-      value: String
-    }],
-    tags: [String],
-    createdAt: {
-      type: Date,
-      default: Date.now
-    },
+   
+   
     updatedAt: {
       type: Date,
       default: Date.now
