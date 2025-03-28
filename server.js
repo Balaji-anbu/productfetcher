@@ -140,79 +140,10 @@ app.get('/health', (req, res) => {
 
 
   // ===== PRODUCT ROUTES =====
-  
-  // Create a product (Admin only) - In a real app, add admin middleware
-  app.post("/products", verifyToken, async (req, res) => {
-    try {
-      const {
-        name,
-        description,
-        price,
-        discountedPrice,
-        category,
-        subcategory,
-        images,
-        mainImage,
-        quantity,
-        features,
-        specifications,
-        tags
-      } = req.body;
-  
-      // Validate required fields
-      if (!name || !description || !price || !category || !mainImage) {
-        return res.status(400).json({
-          success: false,
-          message: "Please provide all required fields"
-        });
-      }
-  
-      // Generate unique product ID
-      const lastProduct = await Product.findOne().sort({ productId: -1 });
-      let newProductId = 1001;
-      
-      if (lastProduct && lastProduct.productId) {
-        const lastProductIdNumber = parseInt(lastProduct.productId.replace("EGM-PROD-", ""));
-        newProductId = lastProductIdNumber + 1;
-      }
-  
-      const uniqueProductId = `EGM-PROD-${newProductId}`;
-  
-      // Create new product
-      const newProduct = new Product({
-        productId: uniqueProductId,
-        name,
-        description,
-        price,
-        discountedPrice,
-        category,
-        subcategory,
-        images: images || [],
-        mainImage,
-        quantity: quantity || 0,
-        features: features || [],
-        specifications: specifications || [],
-        tags: tags || []
-      });
-  
-      await newProduct.save();
-  
-      res.status(201).json({
-        success: true,
-        message: "Product created successfully",
-        product: newProduct
-      });
-    } catch (error) {
-      console.error("Create product error:", error);
-      res.status(500).json({
-        success: false,
-        message: "Error creating product"
-      });
-    }
-  });
+
   
   // Get all products with pagination, filtering, and sorting
-  app.get("/products", async (req, res) => {
+  app.get("/products", verifyToken, async (req, res) => {
     try {
       // Parsing query parameters
       const page = parseInt(req.query.page) || 1;
@@ -227,7 +158,7 @@ app.get('/health', (req, res) => {
       const search = req.query.search;
       
       // Sorting
-      const sortField = req.query.sortField || 'createdAt';
+      const sortField = req.query.sortField || 'productId';
       const sortOrder = req.query.sortOrder === 'asc' ? 1 : -1;
       
       // Build filter object
