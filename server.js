@@ -239,7 +239,7 @@ app.get('/health', (req, res) => {
     try {
       // Parsing query parameters
       const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
+      const limit = parseInt(req.query.limit) || 100;
       const skip = (page - 1) * limit;
       
       // Filter parameters
