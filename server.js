@@ -138,7 +138,63 @@ app.get('/health', (req, res) => {
 });
 
 
-
+// JWT Product Token Generation Endpoint
+app.post("/get-product-token", async (req, res) => {
+  try {
+    // Get the authorization header
+    const authHeader = req.header("Authorization");
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ 
+        success: false, 
+        message: "Authorization token is required" 
+      });
+    }
+    
+    // Extract the token
+    const authToken = authHeader.replace('Bearer ', '');
+    
+    try {
+      // Verify the existing token
+      const decoded = jwt.verify(authToken, JWT_SECRET);
+      
+      // Generate a new product-specific token with appropriate permissions
+      // You can customize the payload based on your needs
+      const productTokenPayload = {
+        id: decoded.id,
+        email: decoded.email,
+        role: decoded.role || 'user',
+        permissions: ['read:products'],
+        // Add any other fields you need
+        iat: Math.floor(Date.now() / 1000),
+        exp: Math.floor(Date.now() / 1000) + (60 * 60) // 1 hour expiry
+      };
+      
+      // Generate the product token
+      const productToken = jwt.sign(productTokenPayload, JWT_SECRET);
+      
+      // Return the new token
+      return res.status(200).json({
+        success: true,
+        token: productToken,
+        expiresIn: 3600 // seconds
+      });
+      
+    } catch (tokenError) {
+      // If token verification fails
+      return res.status(401).json({ 
+        success: false, 
+        message: "Invalid authorization token" 
+      });
+    }
+  } catch (error) {
+    console.error("Product token generation error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error generating product token"
+    });
+  }
+});
   // ===== PRODUCT ROUTES =====
 
   
